@@ -1,26 +1,24 @@
-use std::path::PathBuf;
-use structopt::StructOpt;
+extern crate clap;
 
-#[derive(Debug, StructOpt)]
-#[structopt(
-    name = "clar",
-    about = "Comment Lines Async Replacer: tool to editing your code comments as a separate Markdown files."
-)]
-struct Opt {
-    #[structopt(parse(from_os_str))]
-    files_to_watch: Vec<PathBuf>,
-}
+use clap::{App, Arg};
 
 fn main() {
-    let opt: Opt = Opt::from_args();
+    let args = App::new("CLAR: Comment Lines Async Replacer")
+        .author("Roman Kolesnev, rvkolesnev@gmail.com")
+        .version(env!("CARGO_PKG_VERSION"))
+        .about("Allows you to edit your documentation code comments as a separate markdown files.")
+        .arg(
+            Arg::with_name("files")
+                .help("files to watch")
+                .required(true)
+                .min_values(1),
+        )
+        .get_matches();
 
-    if opt.files_to_watch.is_empty() {
-        println!("No input files given, exiting now. Run `clar --help` for details.");
-        return;
-    }
+    let files = args.values_of("files").unwrap();
 
-    println!("Files to watch:");
-    for file in opt.files_to_watch {
-        println!("  {}", file.to_str().unwrap());
+    println!("files to watch:");
+    for file in files {
+        println!("  {}", file);
     }
 }
